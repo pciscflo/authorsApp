@@ -2,6 +2,7 @@ package com.upc.curso.negocio;
 
 import com.upc.curso.entidades.Author;
 import com.upc.curso.repositorio.AuthorRepositorio;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,8 @@ public class AuthorNegocio {
        return authorRepositorio.save(author);
     }
     public Author buscar(Long codigo) throws Exception {
-        return authorRepositorio.findById(codigo).orElseThrow(() -> new Exception("No se encontró entidad"));
+        return authorRepositorio.findById(codigo).
+                orElseThrow(() -> new Exception("No se encontró entidad"));
     }
     public List<Author> listado(){
         return authorRepositorio.findAll();
@@ -29,7 +31,7 @@ public class AuthorNegocio {
         return authorRepositorio.findByNameAuthorStartingWith(prefijo);
     }
 
-    public Author actualizarProducto(Author author) throws Exception {
+    public Author actualizarAuthor(Author author) throws Exception {
         authorRepositorio.findById(author.getId()).orElseThrow(() -> new Exception("No se encontró entidad"));
         return authorRepositorio.save(author);
     }
@@ -39,5 +41,4 @@ public class AuthorNegocio {
         authorRepositorio.delete(author);
         return author;
     }
-
 }

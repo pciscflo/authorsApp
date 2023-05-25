@@ -1,7 +1,9 @@
 package com.upc.curso.controller;
 
+import com.upc.curso.dtos.AuthorDTO;
 import com.upc.curso.entidades.Author;
 import com.upc.curso.negocio.AuthorNegocio;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,46 +13,55 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-
+import java.util.stream.Collectors;
+//@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
 public class AuthorController {
    @Autowired
    public AuthorNegocio negocio;
    Logger logger = LoggerFactory.getLogger(AuthorController.class);
 
    @GetMapping("/authors")
-   public ResponseEntity<List<Author>>  obtenerAutores(){
-	   return new ResponseEntity<List<Author>>(negocio.listado(),HttpStatus.OK);
+   public ResponseEntity<List<AuthorDTO>>  obtenerAutores(){
+       List<Author> list = negocio.listado();
+       List<AuthorDTO> listDto = convertToLisDto(list);
+	   return new ResponseEntity<List<AuthorDTO>>(listDto,HttpStatus.OK);
    }
 
     @GetMapping("/authors/{nombre}")
-    public ResponseEntity<List<Author>>  obtenerNombreAutores(@PathVariable(value = "nombre") String nombre){
-        return new ResponseEntity<List<Author>>(negocio.obtenerReportePorDescripcion(nombre),HttpStatus.OK);
+    public ResponseEntity<List<AuthorDTO>>  obtenerNombreAutores(@PathVariable(value = "nombre") String nombre){
+        List<Author> list = negocio.obtenerReportePorDescripcion(nombre);
+        List<AuthorDTO> listDto = convertToLisDto(list);
+        return new ResponseEntity<List<AuthorDTO>>(listDto,HttpStatus.OK);
     }
 
    @PostMapping("/author")
-   public ResponseEntity<Author> crearAutor(@RequestBody Author author) {
-       Author p;
+   public ResponseEntity<AuthorDTO> crearAutor(@RequestBody AuthorDTO authorDTO) {
+       Author author;
        try {
            logger.debug("Creando objeto");
-           p = negocio.registrar(author);
+           author = convertToEntity(authorDTO);
+           authorDTO = convertToDto(negocio.registrar(author));
        }catch(Exception e){
            logger.error("Error de creación",e);
            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se pudo crear, sorry", e);
        }
-	   return new ResponseEntity<Author>(p, HttpStatus.OK);
+	   return new ResponseEntity<AuthorDTO>(authorDTO, HttpStatus.OK);
    }
 
    @PutMapping("/author")
-   public ResponseEntity<Author> actualizarAutor(@RequestBody Author authorDetalle) {
+   public ResponseEntity<AuthorDTO> actualizarAutor(@RequestBody AuthorDTO authorDetalle) {
+       AuthorDTO authorDTO;
        Author author;
        try {
+           author = convertToEntity(authorDetalle);
            logger.debug("Actualizando producto");
-           author = negocio.actualizarProducto(authorDetalle);
+           author = negocio.actualizarAuthor(author);
            logger.debug("Producto Actualizado");
-           return new ResponseEntity<Author>(author, HttpStatus.OK);
+           authorDTO = convertToDto(author);
+           return new ResponseEntity<AuthorDTO>(authorDTO, HttpStatus.OK);
        } catch (Exception e) {
            logger.error("Error de Actualización ", e);
            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se pudo actualizar, sorry");
@@ -58,10 +69,14 @@ public class AuthorController {
    }
    
    @DeleteMapping("/author/{codigo}")
-   public ResponseEntity<Author> borrarAutor(@PathVariable(value = "codigo") Long codigo){
+   public ResponseEntity<AuthorDTO> borrarAutor(@PathVariable(value = "codigo") Long codigo){
+       Author author;
+       AuthorDTO authorDTO;
        try {
+           author = negocio.borrarProducto(codigo);
            logger.debug("Eliminando objeto");
-           return new ResponseEntity<Author>(negocio.borrarProducto(codigo), HttpStatus.OK);
+           authorDTO = convertToDto(author);
+           return new ResponseEntity<AuthorDTO>(authorDTO, HttpStatus.OK);
        } catch (Exception e) {
            logger.error("Error de Eliminación ", e);
            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se pudo eliminar, sorry");
@@ -69,17 +84,37 @@ public class AuthorController {
    }
 
 
-    @GetMapping("/entidad/{codigo}")
-    public ResponseEntity<Author> obtenerEntidad(@PathVariable(value = "codigo") Long codigo){
-        Author p;
+    @GetMapping("/author/{codigo}")
+    public ResponseEntity<AuthorDTO> obtenerEntidad(@PathVariable(value = "codigo") Long codigo){
+        Author author;
+        AuthorDTO authorDTO;
         try {
             logger.debug("Buscando entidad");
-            p = negocio.buscar(codigo);
+            author = negocio.buscar(codigo);
+            authorDTO = convertToDto(author);
         }catch(Exception e){
             logger.error("Error de Obtener Entidad");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mi mensaje");
         }
-        return new ResponseEntity<Author>(p, HttpStatus.OK);
+        return new ResponseEntity<AuthorDTO>(authorDTO, HttpStatus.OK);
+    }
+
+    private AuthorDTO convertToDto(Author author) {
+        ModelMapper modelMapper = new ModelMapper();
+        AuthorDTO authorDTO = modelMapper.map(author, AuthorDTO.class);
+        return authorDTO;
+    }
+
+    private Author convertToEntity(AuthorDTO authorDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Author post = modelMapper.map(authorDTO, Author.class);
+        return post;
+    }
+
+    private List<AuthorDTO> convertToLisDto(List<Author> list){
+        return list.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
    
 }
