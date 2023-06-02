@@ -6,27 +6,16 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity //Agnóstica
-@Table(name = "TBL_AUTHOR")
+@Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "nameAuthor", length = 60, nullable = false)
     private String nameAuthor;
-    @JsonFormat(pattern="yyyy-dd-MM")
     private LocalDate birthDateAuthor;
     @Column(name = "emailAuthor",length = 35,nullable = false)
     private String emailAuthor;
-    private transient double total;
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
     public Author() {
     }
 

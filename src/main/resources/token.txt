@@ -1,2 +1,0 @@
-clean verify sonar:sonar -Dsonar.projectKey=jpaProductos_Sonarqube_2  -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=sqp_6a991a186b71173fb33e7017bb27be2eb82055f0

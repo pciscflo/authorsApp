@@ -1,12 +1,11 @@
 package com.upc.curso.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
-@Data
-@NoArgsConstructor
+@Setter
+@Getter
 public class AuthorDTO {
     private Long id;
     private String nameAuthor;
