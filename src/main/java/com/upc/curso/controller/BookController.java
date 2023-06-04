@@ -25,14 +25,15 @@ public class BookController {
     @PostMapping("/book")
     public ResponseEntity<BookDTO> insertar(@RequestBody BookDTO bookDTO){
         Book book = convertToEntity(bookDTO);
+        BookDTO bookDTO1;
         try {
             book = bookNegocio.insertar(book);
-            bookDTO = convertToDto(book);
+            bookDTO1 = convertToDto(book);
         }catch (Exception e){
             e.printStackTrace();
             throw new  ResponseStatusException(HttpStatus.NOT_FOUND, "No se pudo insertar, sorry");
         }
-        return new ResponseEntity<BookDTO>(bookDTO, HttpStatus.OK);
+        return new ResponseEntity<BookDTO>(bookDTO1, HttpStatus.OK);
     }
 
     @GetMapping("/books")
