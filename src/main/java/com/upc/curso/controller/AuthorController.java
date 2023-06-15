@@ -15,7 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 //@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
-@CrossOrigin(origins = {"http://localhost:4200"})
+//@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {"https://steady-kangaroo-6d65de.netlify.app"})
 @RestController
 @RequestMapping("/api")
 public class AuthorController {
