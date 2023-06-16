@@ -15,7 +15,7 @@
 	<description>JPAProductosAPI</description>
 	<!-- SONARQUBE -->
 	<properties>
-		<java.version>19</java.version>
+		<java.version>11</java.version>
 		<sonar.sources>src/main/java</sonar.sources>
 		<sonar.tests>src/test/java</sonar.tests>
 		<sonar.java.binaries>target/classes</sonar.java.binaries>
@@ -70,6 +70,7 @@
 			<version>2.4.5</version>
 		</dependency>
 
+
 	</dependencies>
 
 	<build>
@@ -97,6 +98,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<!-- AWS -->
+		<finalName>backend</finalName>
 	</build>
 
 </project>
