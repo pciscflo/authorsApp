@@ -9,4 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface BookRepositorio extends JpaRepository<Book, Long> {
+   @Query("SELECT COUNT(b) FROM books b,  Author a WHERE b.nHojas>1000 and b.author.id =: idAuthor")
+   int quantityBooks(Long idAuthor);
 }

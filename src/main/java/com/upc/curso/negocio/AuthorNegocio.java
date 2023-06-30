@@ -31,6 +31,10 @@ public class AuthorNegocio {
         return authorRepositorio.findByNameAuthorStartingWith(prefijo);
     }
 
+    public List<Author> obtenerReporteAutoresPagina(int numPages){
+        return authorRepositorio.findAllByAuthorPages(numPages);
+    }
+
     public Author actualizarAuthor(Author author) throws Exception {
         authorRepositorio.findById(author.getId()).orElseThrow(() -> new Exception("No se encontró entidad"));
         return authorRepositorio.save(author);

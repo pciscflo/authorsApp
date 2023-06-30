@@ -15,8 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 //@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
-//@CrossOrigin(origins = {"http://localhost:4200"})
-@CrossOrigin(origins = {"https://steady-kangaroo-6d65de.netlify.app"})
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api")
 public class AuthorController {
@@ -37,6 +36,13 @@ public class AuthorController {
         List<AuthorDTO> listDto = convertToLisDto(list);
         return new ResponseEntity<List<AuthorDTO>>(listDto,HttpStatus.OK);
     }
+    @GetMapping("/authorsPages/{numPages}")
+    public ResponseEntity<List<AuthorDTO>>  obtenerAutoresPages(@PathVariable(value = "numPages") int numPages){
+        List<Author> list = negocio.obtenerReporteAutoresPagina(numPages);
+        List<AuthorDTO> listDto = convertToLisDto(list);
+        return new ResponseEntity<List<AuthorDTO>>(listDto,HttpStatus.OK);
+    }
+
 
    @PostMapping("/author")
    public ResponseEntity<AuthorDTO> crearAutor(@RequestBody AuthorDTO authorDTO) {

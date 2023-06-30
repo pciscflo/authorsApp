@@ -4,8 +4,9 @@ import com.upc.curso.entidades.Author;
 import lombok.*;
 
 import java.time.LocalDate;
-@Setter
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookDTO {
     private Long id;
     private String nameBook;
